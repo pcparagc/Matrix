@@ -7,14 +7,16 @@ import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.win32.StdCallLibrary;
 
-public interface Kernel32 extends StdCallLibrary {
+public interface Kernel32 extends StdCallLibrary 
+{
 
     public Kernel32 INSTANCE = (Kernel32) Native.loadLibrary("Kernel32", Kernel32.class);
 
     /**
      * @see http://msdn2.microsoft.com/en-us/library/aa373232.aspx
      */
-    public class SYSTEM_POWER_STATUS extends Structure {
+    public class SYSTEM_POWER_STATUS extends Structure 
+    {
         public byte ACLineStatus;
         public byte BatteryFlag;
         public byte BatteryLifePercent;
@@ -22,7 +24,8 @@ public interface Kernel32 extends StdCallLibrary {
         public int BatteryLifeTime;
         public int BatteryFullLifeTime;
         @Override
-        protected List<String> getFieldOrder() {
+        protected List<String> getFieldOrder() 
+        {
             ArrayList<String> fields = new ArrayList<String>();
             fields.add("ACLineStatus");
             fields.add("BatteryFlag");
@@ -79,11 +82,11 @@ public interface Kernel32 extends StdCallLibrary {
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            sb.append("ACLineStatus: " + getACLineStatusString() + "\n");
-            sb.append("Battery Flag: " + getBatteryFlagString() + "\n");
-            sb.append("Battery Life: " + getBatteryLifePercent() + "\n");
-            sb.append("Battery Left: " + getBatteryLifeTime() + "\n");
-            sb.append("Battery Full: " + getBatteryFullLifeTime() + "\n");
+          //  sb.append("ACLineStatus: " + getACLineStatusString() + "\n");
+           // sb.append("Battery Flag: " + getBatteryFlagString() + "\n");
+            sb.append("Battery Life is  " + getBatteryLifePercent() + "\n");
+           // sb.append("Battery Left: " + getBatteryLifeTime() + "\n");
+            //sb.append("Battery Full: " + getBatteryFullLifeTime() + "\n");
             return sb.toString();
         }
     }

@@ -8,11 +8,12 @@ import com.darkprograms.speech.microphone.Microphone;
 import com.darkprograms.speech.recognizer.GSpeechDuplex;
 import com.darkprograms.speech.recognizer.GSpeechResponseListener;
 import com.darkprograms.speech.recognizer.GoogleResponse;
-
 import marytts.TextToSpeech;
 import marytts.signalproc.effects.JetPilotEffect;
 import net.sourceforge.javaflacencoder.FLACFileWriter;
+
 import java.awt.*;  
+
 import javax.swing.*;  
 
 public class Application 
@@ -22,7 +23,10 @@ public class Application
 	private final Microphone mic = new Microphone(FLACFileWriter.FLAC);
 	private final GSpeechDuplex duplex = new GSpeechDuplex("AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw");
 	private final RobotActions ra = new RobotActions();
+	private final Speech speech =new Speech();
 	public static JLabel label;
+	public static Client client=new Client();
+	public final NetworkConnection nc=new NetworkConnection();
 	String oldText = "";
 	
 	
@@ -71,6 +75,7 @@ public class Application
 		
 		//Start the Speech Recognition
 		startSpeechRecognition();
+		 nc.runConnectionThread();
 		
 	}
 	
@@ -89,86 +94,89 @@ public class Application
 			return;
 		
 		if (output.contains("hello")) 
-		{//Hello
-			speak("Who is there");
+		{
+			speech.speak("Hi   I  am  matrix. How can i help you ?");
 			
 			
 		} 
-		else if (output.contains("introduce yourself")) 
-		{//Introduce your self		
-			speak("My name is Alexandra , i am 27 years old");
+		else if (output.contains("pause")) 
+		{		
+				ra.pressSpace();
+		}
+		else if (output.contains("open crome") || output.contains("open chrome ") || output.contains("launch chrome") || output.contains("open browser") ) 
+		{		
+				ra.openChrome();
+		} 
+		else if (output.contains("go back") || output.contains("back")) 
+		{	
+			ra.moveBack();
+		} 
+		else if (output.contains("go forward") || output.contains("forward") ) 
+		{
+			ra.moveForward();;
+		} 
+		else if (output.contains("open my computer  ") || output.contains("my computer") ) 
+		{ 	
+			speech.speak("Opening my computer   ");
+			ra.openFileExplorer();
 			
 		} 
-		else if (output.contains("oh boy") || output.contains("obey")) 
-		{//obey
-			speak("Never to you! You are not my addiction.");
+		else if (output.contains("minimize") || output.contains(" minimize everything")  ) 
+		{
+			speech.speak("minimized  ");
+			ra.minimize();
+		}
+		else if (output.contains("new tab") || output.contains("tab")) 
+		{
+			ra.spawnTab();
+		} 
+		else if (output.contains("close tab")) 
+		{
+			ra.closeTab();
+		} 
+		else if (output.contains("turn on caps")|| output.contains("capslock")) 
+		{
+			ra.capsOn();
+		}
+		else if (output.contains("open eclipse")|| output.contains("launch eclipse") ) 
+		{
 			
 		} 
-		else if (output.contains("what is your profession")) 
-		{//what is your profession	
-			speak("I am a Psychologist");
-		} 
-		else if (output.contains("do you have any boyfriend")) 
-		{ //do you have any boyfriend		
-			speak("Yes");
+		else if (output.contains("open unity") || output.contains("launch unity")) 
+		{
+			
 			
 		} 
-		else if (output.contains("where do you live")) 
-		{//where do you live	
-			speak("I am not going to tell you ma nigga");
+		else if (output.contains("any messages") || output.contains("check messages") || output.contains(" messages")) 
+		{
 			
 		}
-		else if (output.contains("I think you're funny") || output.contains("I think you are funny")) 
-		{//I think you are funny		
-			speak("Yeah you too!");
+		else if (output.contains("open siphon")|| output.contains(" launch siphon")  ) 
+		{
 			
 		} 
-		else if (output.contains("let me Smash")) 
-		{//I think you are funny		
-			speak("Dont make me horny ");
+		else if (output.contains("disappear")) 
+		{
 			
 		} 
-		else if (output.contains("damn girl")) 
-		{//damn girl		
-			speak("Shut the fuck up");
-		}
-		else if (output.contains("like a tetraplegic")) 
-		{//like a tetraplegic	
-			speak("It's not of your business");
-			
+		else if (output.contains("send message")) 
+		{
+			client.go();
 		} 
-		else if (output.contains("who's your daddy") || output.contains("but I am the boss")) 
-		{//but I'm the boss
-			speak("Fuck off Alex");
-			
+		else if (output.contains("battery") || output.contains("battery status") ) 
+		{
+			Kernel32.SYSTEM_POWER_STATUS batteryStatus = new Kernel32.SYSTEM_POWER_STATUS();
+			Kernel32.INSTANCE.GetSystemPowerStatus(batteryStatus);
+			speech.speak(batteryStatus.toString()); // Shows result of toString() method.
 		} 
-		else if (output.contains("show me some respect")) 
-		{//like a tetraplegic	
-			speak("Ok i will try");
-			
-		}
-		else if (output.contains("tell me a story")) 
-		{//tell me a story
-			speak("I dont know any story");
-			
-		} 
-		else if (output.contains("why do you speak like that")) 
-		{//why do you speak like that
-			speak("Like what?");
-			
-		} 
-		else if (output.contains("say hi to Martina")) 
-		{//Stop Speech Recognition
-			speak("Hello babe how are you doing ?");
-			
-		} 
-		else if (output.contains("stop speech recognition")) 
-		{//Stop Speech Recognition
+		else if (output.contains("stop speech recognition") ||  output.contains("stop hearing")  ) 
+		{
 			stopSpeechRecognition();
 			
 		} 
 		else if (output.contains("bye") ||  output.contains("bye matrix") ||output.contains("by")   ) 
 		{   
+			
 			stopSpeechRecognition();	
 			System.exit(0);
 		} 
@@ -190,8 +198,8 @@ public class Application
 		} 
 		else 
 		{ 
-			//speak("Sorry    can't understand your command ");
-			//System.out.println("Not entered on any else if statement");
+			speech.speak("Sorry    can't understand your command ");
+			
 		}
 		
 	}
@@ -253,7 +261,6 @@ public class Application
 	    frame.setLocationRelativeTo(null);  
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
 	    frame.setVisible(true);   
-		
-	}
+	 }
 	
 }
